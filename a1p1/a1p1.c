@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <math.h>
 #include "uart.h"
 #include "iregister.h"
 
@@ -20,6 +21,17 @@ char* toBinary(int n, int len){
     }
     binary[k] = '\0';
     return binary;
+}
+
+char * toArray(int number) {
+    int n = log10(number) + 1;
+    int i;
+    char *numberArray = calloc(n, sizeof(char));
+    for (i = n-1; i >= 0; --i, number /= 10)
+    {
+        numberArray[i] = (number % 10) + '0';
+    }
+    return numberArray;
 }
 
 
@@ -37,7 +49,9 @@ int main() {
 	uart_puts("Hello World1!\n");
 	uart_puts("Hello World2!\n");
 	uart_puts("Hello World3!\n");
-
+	uart_puts("\n");
+	uart_puts(toArray(10));
+	
 	
 	
 	iRegister *temp;
