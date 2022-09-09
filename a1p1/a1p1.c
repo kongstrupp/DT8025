@@ -36,6 +36,7 @@ int main() {
 	uart_puts("Hello World!\n");
 	uart_puts("Hello World1!\n");
 	uart_puts("Hello World2!\n");
+	uart_puts("Hello World3!\n");
 
 	
 	
