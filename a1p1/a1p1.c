@@ -6,7 +6,6 @@
 */
 
 #include <stdio.h>
-#include <math.h>
 #include "uart.h"
 #include "iregister.h"
 
@@ -23,45 +22,92 @@ char* toBinary(int n, int len){
     return binary;
 }
 
-char * toArray(int number) {
-    int n = log10(number) + 1;
-    int i;
-    char *numberArray = calloc(n, sizeof(char));
-    for (i = n-1; i >= 0; --i, number /= 10)
-    {
-        numberArray[i] = (number % 10) + '0';
-    }
-    return numberArray;
-}
+
+
+
 
 
 int main() {
 	//iRegister r;
 	char str[LINE];
+	char str1[LINE];
 	char c;
 	int inumber, inibble, ibit, ishift = 0;
+	int i = 0;
 	
 	uart_init();
 	uart_clear();
-	uart_puts("a1p1\n");
+
+	uart_puts("DT8025 - Assignment 1 - Part 1\n");
+	uart_puts("Enter you name: ");
+
+	while(c=uart_getc()) {
+		if (c == '\n' || i == LINE)	{
+		   str[i++] = '\0';
+		   break;
+		}
+		str[i++] = c;
+		str1[0] = c;
+		str1[1] = '\0';
+		uart_puts(str1);
+	}
+	
 	uart_puts("\n");
-	uart_puts("Hello World!\n");
-	uart_puts("Hello World1!\n");
-	uart_puts("Hello World2!\n");
-	uart_puts("Hello World3!\n");
-	uart_puts("\n");
-	uart_puts(toArray(10));
+	uart_puts("Welcome ");
+	uart_puts(str);
 	
 	
 	
+	
+	
+}
+
+
+/*
+
+//uart_puts(c);
+	//int i = 0;
+
+
+	/*
+	
+	str[0] = 'H';
+	str[1] = 'i';
+	str[2] = '\0';
+	uart_puts(str);
+	while(c=uart_getc()) {
+		if (c = '\n'){
+		   break;
+		}
+		str[i++] = c;
+		uart_puts(c);
+	}
+	*/
+	/*
+	8
+	15/namespace
+	str[0] = '1';
+	str[1] = '2';
+	str[2] = '\0';	
+	int i = atoi(str);
+	*/
+	//uart_puts(str);
+	
+	
+	//And Test this
+	//uart_puts(x);
+	//uart_puts("\n");
+	
+	
+	/*
 	iRegister *temp;
 	temp = malloc(sizeof(* temp));
 	temp->content = 12708934;
     uart_puts(toBinary(temp->content,32)); 
 	resetBit(1,temp);
 	uart_puts(toBinary(temp->content,32)); 
-	
-	uart_puts("End of code\n");
+	*/
+	//uart_puts("End of code\n");
     
     // To Display a string
 	// uart_puts("String\n");
@@ -71,4 +117,7 @@ int main() {
 	// To get a number, you might want to call uart_getc multiple times until receiving a new line.
 	// The results of each call to uart_getc can be stored into str
 	// atoi(str) will result a number.
-}
+
+
+
+*/
