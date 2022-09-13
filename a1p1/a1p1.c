@@ -11,17 +11,6 @@
 
 #define LINE 80
 
-
-char* toBinary(int n, int len){
-    char* binary = (char*)malloc(sizeof(char) * len);
-    int k = 0;
-    for (unsigned i = (1 << len - 1); i > 0; i = i / 2) {
-        binary[k++] = (n & i) ? '1' : '0';
-    }
-    binary[k] = '\0';
-    return binary;
-}
-
 // Itoa from the regular library doest seem to work so took an finished function from the internet 
 char* itoa(int value, char* result, int base) {
     // check that the base if valid
@@ -180,134 +169,59 @@ int main() {
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
-	//r.content = inumber;
 	uart_puts("getBit(2,&r) ");
-	getBit(ibit,&r);
+	uart_puts("returned ");
+	itoa(getBit(ibit,&r),str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	r.content = inumber;
 	uart_puts("resetBit(2,&r) ");
+	uart_puts("returned ");
 	resetBit(ibit,&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	r.content = inumber;
 	uart_puts("assignNibble(2,1,&r) ");
+	uart_puts("returned ");
 	assignNibble(inibble,1,&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	r.content = inumber;
 	uart_puts("getNibble(2,&r) ");
-	getNibble(inibble,&r);
+	uart_puts("returned ");
+	itoa(getNibble(inibble,&r),str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	r.content = inumber;
 	uart_puts("shiftRight(2,&r) ");
+	uart_puts("returned ");
 	shiftRight(ishift,&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	r.content = inumber;
 	uart_puts("shiftLeft(2,&r) ");
+	uart_puts("returned ");
 	shiftLeft(ishift,&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 }
-
-
-/*
-
-while(c=uart_getc()) {
-		if (c == '\n' || i == LINE)	{
-		   str[i++] = '\0';
-		   break;
-		}
-		str[i++] = c;
-		str1[0] = c;
-		str1[1] = '\0';
-		uart_puts(str1);
-	}
-	
-	uart_puts("\n");
-	uart_puts("Welcome ");
-	uart_puts(str);
-
-	uart_puts("Enter an integer numeber (32-bit): ");
-	uart_puts("Enter a bit position (0<=bit<=31): ");
-	uart_puts("Enter a nibble position (0<=nibble<=7): ");
-	uart_puts("Enter the number of bits to shift (1<=bits<=31): ")
-	uart_puts("You entered number ");
-
-	
-
-	r = malloc(sizeof(* r));
-	r->content = 24213;
-
-	uart_puts(toBinary(r->content,32));
-	uart_puts("\n");
-	resetBit(1,r);
-	uart_puts(toBinary(r->content,32));
-
-	free(r);
-	
-
-*/ 
-
-
-
-/*
-//uart_puts(c);
-//int i = 0;
-
-
-
-	
-	str[0] = 'H';
-	str[1] = 'i';
-	str[2] = '\0';
-	uart_puts(str);
-	while(c=uart_getc()) {
-		if (c = '\n'){
-		   break;
-		}
-		str[i++] = c;
-		uart_puts(c);
-	}
-	
-	
-	8
-	15/namespace
-	str[0] = '1';
-	str[1] = '2';
-	str[2] = '\0';	
-	int i = atoi(str);
-	
-	//uart_puts(str);
-	
-	
-	//And Test this
-	//uart_puts(x);
-	//uart_puts("\n");
-	
-	
-	
-	iRegister *temp;
-	temp = malloc(sizeof(* temp));
-	temp->content = 12708934;
-    uart_puts(toBinary(temp->content,32)); 
-	resetBit(1,temp);
-	uart_puts(toBinary(temp->content,32)); 
-	
-	//uart_puts("End of code\n");
-    
-    // To Display a string
-	// uart_puts("String\n");
-	// To get one character
-	// c=uart_getc();
-	
-	// To get a number, you might want to call uart_getc multiple times until receiving a new line.
-	// The results of each call to uart_getc can be stored into str
-	// atoi(str) will result a number.
-	*/
