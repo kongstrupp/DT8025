@@ -8,5 +8,5 @@
 int main()
 {
 	led_init();
-	led_on();
+	led_blink();
 }
