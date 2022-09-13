@@ -23,25 +23,122 @@ char* toBinary(int n, int len){
 }
 
 
+void scanNext(char str[LINE]){
 
+	char str1[LINE];
+	char c;
+	int i = 0;
 
+	while(c=uart_getc()) {
+		if (c == '\n' || i == LINE)	{
+		   str[i++] = '\0';
+		   break;
+		}
+		str[i++] = c;
+		str1[0] = c;
+		str1[1] = '\0';
+		uart_puts(str1);
+	}
+	
+}
+
+int scanNextNumber(char str[LINE]){
+
+	char str1[LINE];
+	int retNumber;
+	char c;
+	int i = 0;
+
+	while(c=uart_getc()) {
+		if (c == '\n' || i == LINE)	{
+		   str[i++] = '\0';
+		   break;
+		}
+		str[i++] = c;
+		str1[0] = c;
+		str1[1] = '\0';
+		uart_puts(str1);
+	}
+
+	retNumber = atoi(str);
+
+	return retNumber;
+	
+}
 
 
 int main() {
-	//iRegister r;
+
+	iRegister r;
+
 	char str[LINE];
 	char str1[LINE];
+	
+	char inum[LINE];
+	char inib[LINE];
+	char ib[LINE];
+	char is[LINE];
+
 	char c;
 	int inumber, inibble, ibit, ishift = 0;
 	int i = 0;
-	
+		
 	uart_init();
 	uart_clear();
 
-	uart_puts("DT8025 - Assignment 1 - Part 1\n");
-	uart_puts("Enter you name: ");
+	uart_puts("Enter your name: ");
+	scanNext(str);
+	uart_puts("\n");
+	uart_puts("Welcome ");
+	uart_puts(str);
 
-	while(c=uart_getc()) {
+
+	uart_puts("\n");
+	uart_puts("Enter an integer numeber (32-bit): ");
+	inumber = scanNextNumber(inum);
+	r.content = inumber;
+	
+	uart_puts("\n");
+	uart_puts("Enter a bit position (0<=bit<=31): ");
+	ibit = scanNextNumber(ib);
+
+	uart_puts("\n");
+	uart_puts("Enter a nibble position (0<=nibble<=7): ");
+	inibble = scanNextNumber(inib);
+
+
+	uart_puts("\n");
+	uart_puts("Enter the number of bits to shift (1<=bits<=31): ");
+	ishift = scanNextNumber(is);
+
+	uart_puts("\n");
+	uart_puts("You entered the number: ");
+	uart_puts(inum);
+	uart_puts(reg2str(r));
+	
+
+	uart_puts("\n");
+	uart_puts("Bit: ");
+	uart_puts(ib);
+
+
+
+	
+	uart_puts(" Nibble: ");
+	uart_puts(inib);
+
+
+
+	
+
+	
+	
+}
+
+
+/*
+
+while(c=uart_getc()) {
 		if (c == '\n' || i == LINE)	{
 		   str[i++] = '\0';
 		   break;
@@ -55,21 +152,36 @@ int main() {
 	uart_puts("\n");
 	uart_puts("Welcome ");
 	uart_puts(str);
+
+	uart_puts("Enter an integer numeber (32-bit): ");
+	uart_puts("Enter a bit position (0<=bit<=31): ");
+	uart_puts("Enter a nibble position (0<=nibble<=7): ");
+	uart_puts("Enter the number of bits to shift (1<=bits<=31): ")
+	uart_puts("You entered number ");
+
 	
+
+	r = malloc(sizeof(* r));
+	r->content = 24213;
+
+	uart_puts(toBinary(r->content,32));
+	uart_puts("\n");
+	resetBit(1,r);
+	uart_puts(toBinary(r->content,32));
+
+	free(r);
 	
-	
-	
-	
-}
+
+*/ 
+
 
 
 /*
-
 //uart_puts(c);
-	//int i = 0;
+//int i = 0;
 
 
-	/*
+
 	
 	str[0] = 'H';
 	str[1] = 'i';
@@ -82,15 +194,15 @@ int main() {
 		str[i++] = c;
 		uart_puts(c);
 	}
-	*/
-	/*
+	
+	
 	8
 	15/namespace
 	str[0] = '1';
 	str[1] = '2';
 	str[2] = '\0';	
 	int i = atoi(str);
-	*/
+	
 	//uart_puts(str);
 	
 	
@@ -99,14 +211,14 @@ int main() {
 	//uart_puts("\n");
 	
 	
-	/*
+	
 	iRegister *temp;
 	temp = malloc(sizeof(* temp));
 	temp->content = 12708934;
     uart_puts(toBinary(temp->content,32)); 
 	resetBit(1,temp);
 	uart_puts(toBinary(temp->content,32)); 
-	*/
+	
 	//uart_puts("End of code\n");
     
     // To Display a string
@@ -117,7 +229,4 @@ int main() {
 	// To get a number, you might want to call uart_getc multiple times until receiving a new line.
 	// The results of each call to uart_getc can be stored into str
 	// atoi(str) will result a number.
-
-
-
-*/
+	*/
