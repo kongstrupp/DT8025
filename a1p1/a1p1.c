@@ -13,9 +13,7 @@
 
 // Itoa from the regular library doest seem to work so took an finished function from the internet 
 char* itoa(int value, char* result, int base) {
-    // check that the base if valid
     if (base < 2 || base > 36) { *result = '\0'; return result; }
-
     char* ptr = result, *ptr1 = result, tmp_char;
     int tmp_value;
 
@@ -25,7 +23,7 @@ char* itoa(int value, char* result, int base) {
         *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
     } while ( value );
 
-    // Apply negative sign
+    
     if (tmp_value < 0) *ptr++ = '-';
     *ptr-- = '\0';
     while(ptr1 < ptr) {
@@ -36,7 +34,7 @@ char* itoa(int value, char* result, int base) {
     return result;
 }
 
-
+// Scan the next String
 void scanNext(char str[LINE]){
 
 	char str1[LINE];
@@ -56,6 +54,7 @@ void scanNext(char str[LINE]){
 	
 }
 
+// Scan the next number and return that number as an int 
 int scanNextNumber(char str[LINE]){
 
 	char str1[LINE];
