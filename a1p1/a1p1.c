@@ -22,6 +22,31 @@ char* toBinary(int n, int len){
     return binary;
 }
 
+// Itoa from the regular library doest seem to work so took an finished function from the internet 
+char* itoa(int value, char* result, int base) {
+    // check that the base if valid
+    if (base < 2 || base > 36) { *result = '\0'; return result; }
+
+    char* ptr = result, *ptr1 = result, tmp_char;
+    int tmp_value;
+
+    do {
+        tmp_value = value;
+        value /= base;
+        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+    } while ( value );
+
+    // Apply negative sign
+    if (tmp_value < 0) *ptr++ = '-';
+    *ptr-- = '\0';
+    while(ptr1 < ptr) {
+        tmp_char = *ptr;
+        *ptr--= *ptr1;
+        *ptr1++ = tmp_char;
+    }
+    return result;
+}
+
 
 void scanNext(char str[LINE]){
 
@@ -63,7 +88,6 @@ int scanNextNumber(char str[LINE]){
 	retNumber = atoi(str);
 
 	return retNumber;
-	
 }
 
 
@@ -73,7 +97,8 @@ int main() {
 
 	char str[LINE];
 	char str1[LINE];
-	
+	char str2[LINE];
+
 	char inum[LINE];
 	char inib[LINE];
 	char ib[LINE];
@@ -128,18 +153,30 @@ int main() {
 
 	uart_puts("\n");
 	uart_puts("setAll(&r) ");
+	uart_puts("returned ");
 	setAll(&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	uart_puts("resetAll(&r) ");
+	uart_puts("returned ");
 	resetAll(&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
 	r.content = inumber;
 	uart_puts("setBit(2,&r) ");
+	uart_puts("returned ");
 	setBit(ibit,&r);
+	itoa(r.content,str2,10);
+	uart_puts(str2);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
@@ -177,24 +214,6 @@ int main() {
 	uart_puts("shiftLeft(2,&r) ");
 	shiftLeft(ishift,&r);
 	uart_puts(reg2str(r));
-
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-	
-
-	
-	
 }
 
 
