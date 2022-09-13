@@ -86,6 +86,8 @@ int main() {
 	uart_init();
 	uart_clear();
 
+	uart_puts("DT8025 - Assignment 1 - Part 1\n");
+	uart_puts("\n");
 	uart_puts("Enter your name: ");
 	scanNext(str);
 	uart_puts("\n");
@@ -114,18 +116,78 @@ int main() {
 	uart_puts("\n");
 	uart_puts("You entered the number: ");
 	uart_puts(inum);
+	uart_puts(" ");
 	uart_puts(reg2str(r));
 	
-
 	uart_puts("\n");
 	uart_puts("Bit: ");
 	uart_puts(ib);
 
-
-
-	
 	uart_puts(" Nibble: ");
 	uart_puts(inib);
+
+	uart_puts("\n");
+	uart_puts("setAll(&r) ");
+	setAll(&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	uart_puts("resetAll(&r) ");
+	resetAll(&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	r.content = inumber;
+	uart_puts("setBit(2,&r) ");
+	setBit(ibit,&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	//r.content = inumber;
+	uart_puts("getBit(2,&r) ");
+	getBit(ibit,&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	r.content = inumber;
+	uart_puts("resetBit(2,&r) ");
+	resetBit(ibit,&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	r.content = inumber;
+	uart_puts("assignNibble(2,1,&r) ");
+	assignNibble(inibble,1,&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	r.content = inumber;
+	uart_puts("getNibble(2,&r) ");
+	getNibble(inibble,&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	r.content = inumber;
+	uart_puts("shiftRight(2,&r) ");
+	shiftRight(ishift,&r);
+	uart_puts(reg2str(r));
+
+	uart_puts("\n");
+	r.content = inumber;
+	uart_puts("shiftLeft(2,&r) ");
+	shiftLeft(ishift,&r);
+	uart_puts(reg2str(r));
+
+	
+	
+
+
+
+
+
+
+
+
 
 
 
