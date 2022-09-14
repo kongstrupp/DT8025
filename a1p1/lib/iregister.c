@@ -12,16 +12,7 @@
 #include <stdio.h>
 #include "iregister.h"
 
-int powerOf(int x,int n) {
-    int i;
-    int number = 1;
 
-    for (i = 0; i < n; ++i) {
-        number *= x;
-    }
-
-    return(number);
-}
 
 void resetBit(int i, iRegister *r) {
     // pre-condition
@@ -203,6 +194,7 @@ int getNibble(int pos, iRegister *r) {
     int targetPos = pos * 4;
     int nibble = (((1 << 4) - 1) & (r->content >> targetPos));
 
+    // post condtion
     if (nibble < 0 || nibble > 15){
         fprintf(stderr,"Error nibble position\n");
         return 0;
@@ -212,28 +204,43 @@ int getNibble(int pos, iRegister *r) {
 }
 
 char *reg2str(iRegister r) {
+
+    if(r == NULL)
+    {
+        fprintf(stderr, "Error: A NULL pointer was given to reg2str\n");
+        return 0;
+    }
+
     char* binary = (char*)malloc(sizeof(char) * 32);
     int k = 0;
     for (unsigned i = (1 << (32 - 1)); i > 0; i = i / 2) {
         binary[k++] = ((r.content) & i) ? '1' : '0';
     }
     binary[k] = '\0';
+
+    if (binary[k] != '\0') {
+        fprintf(stderr,"Error reg2str did not end with a null\n");
+        return 0;
+    }
+
     return binary;
 }
 
 void shiftRight(int i, iRegister *r) {
 
+    // pre condtion
     if(r == NULL)
     {
         fprintf(stderr, "Error: A NULL pointer was given to shiftRight\n");
         return;
-    }
+    } 
 
     r->content = (r->content >> i);
 }
 
 void shiftLeft(int i, iRegister *r) {
 
+    // pre condtion
     if(r == NULL)
     {
         fprintf(stderr, "Error: A NULL pointer was given to shiftLeft\n");

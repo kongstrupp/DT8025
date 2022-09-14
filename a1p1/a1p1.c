@@ -86,6 +86,7 @@ int main() {
 	char str[LINE];
 	char str1[LINE];
 	char str2[LINE];
+	char str3[LINE];
 
 	char inum[LINE];
 	char inib[LINE];
@@ -159,7 +160,10 @@ int main() {
 
 	uart_puts("\n");
 	r.content = inumber;
-	uart_puts("setBit(2,&r) ");
+	itoa(ibit,str3,10);
+	uart_puts("setBit(");
+	uart_puts(str3);
+	uart_puts(",&r) ");
 	uart_puts("returned ");
 	setBit(ibit,&r);
 	itoa(r.content,str2,10);
@@ -168,7 +172,9 @@ int main() {
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
-	uart_puts("getBit(2,&r) ");
+	uart_puts("getBit(");
+	uart_puts(str3);
+	uart_puts(",&r) ");
 	uart_puts("returned ");
 	itoa(getBit(ibit,&r),str2,10);
 	uart_puts(str2);
@@ -177,7 +183,9 @@ int main() {
 
 	uart_puts("\n");
 	r.content = inumber;
-	uart_puts("resetBit(2,&r) ");
+	uart_puts("resetBit(");
+	uart_puts(str3);
+	uart_puts(",&r) ");
 	uart_puts("returned ");
 	resetBit(ibit,&r);
 	itoa(r.content,str2,10);
@@ -187,7 +195,10 @@ int main() {
 
 	uart_puts("\n");
 	r.content = inumber;
-	uart_puts("assignNibble(2,1,&r) ");
+	itoa(inibble,str3,10);
+	uart_puts("assignNibble(");
+	uart_puts(str3);
+	uart_puts(",1,&r) ");
 	uart_puts("returned ");
 	assignNibble(inibble,1,&r);
 	itoa(r.content,str2,10);
@@ -196,8 +207,9 @@ int main() {
 	uart_puts(reg2str(r));
 
 	uart_puts("\n");
-	r.content = inumber;
-	uart_puts("getNibble(2,&r) ");
+	uart_puts("getNibble(");
+	uart_puts(str3);
+	uart_puts(",&r) ");
 	uart_puts("returned ");
 	itoa(getNibble(inibble,&r),str2,10);
 	uart_puts(str2);
@@ -206,7 +218,10 @@ int main() {
 
 	uart_puts("\n");
 	r.content = inumber;
-	uart_puts("shiftRight(2,&r) ");
+	itoa(ishift,str3,10);
+	uart_puts("shiftRight(");
+	uart_puts(str3);
+	uart_puts(",&r) ");
 	uart_puts("returned ");
 	shiftRight(ishift,&r);
 	itoa(r.content,str2,10);
@@ -216,7 +231,9 @@ int main() {
 
 	uart_puts("\n");
 	r.content = inumber;
-	uart_puts("shiftLeft(2,&r) ");
+	uart_puts("shiftLeft(");
+	uart_puts(str3);
+	uart_puts(",&r) ");
 	uart_puts("returned ");
 	shiftLeft(ishift,&r);
 	itoa(r.content,str2,10);

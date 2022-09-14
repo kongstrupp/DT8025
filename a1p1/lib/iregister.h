@@ -15,59 +15,125 @@ typedef struct{
     int content;
 } iRegister;
 
-/**
- *  Bellow you find the declarations for the functions to modify and display the
- *  memory content of a iRegister data structure. Before each declaration, a brief 
- *  description about what the function shall do is given. 
- *  Later in this file, the documentation for the resetBit function is given. 
- *  Students should follow that format.
- */ 
-
-/** resets all the bits of the iRegister (to 0)
- */ 
+/** @brief Resets all the bits 
+ * 
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ * 
+ *  @return void
+ * 
+ *  Pre-condition: iRegister != Null
+ * 
+ *  Post-condition: Check all bits == zero 
+ */
 void resetAll(iRegister *);
 
-/** sets the i'th bit of the iRegister (to 1)
+/** @brief set a bit to 1
+ * 
+ *  @param i The bit position that will be set 
+ * 
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ * 
+ *  @return void
+ * 
+ *  Pre-condition: iRegister != Null and ( i < 0 || i > 31)
+ * 
+ *  Post-condition: ((r->content & (1<<i)) == 0) check that it is not zero
  */
 void setBit(int, iRegister *);
 
-
-/**sets all the bits of the iRegister (to 1)
+/** @brief set all bits to 1
+ *  
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ * 
+ *  @return void
+ * 
+ *  Pre-condition: iRegister != Null
+ * 
+ *  Post-condition: (r->content & (1<<i)) == 0) check all bits that they are not zero
  */
 void setAll(iRegister *);
 
-
-/** returns the i'th bit of the iRegister as an integer (1 if it is set, or 0 otherwise)
+/** @brief get a bit at postion
+ *  
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ * 
+ *  @param i bit position to get bit from  
+ *
+ *  @return int
+ * 
+ *  Pre-condition: iRegister != Null and ( i < 0 || i > 31)
+ * 
+ *  Post-condition: (ret < 0 || ret > 1) check that it return a bit value
  */
 int getBit(int, iRegister *);
 
-
-/** set the first (for pos=1) or the second (for pos=2) four bits of iRegsiter
+/** @brief assign a nibble value to a 32 bit register
+ *  
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ * 
+ *  @param pos nibble position in the 32 bit register 
+ *
+ *  @param value value that is assign to the given nibble position 
+ *
+ *  @return void
+ * 
+ *  Pre-condition: iRegister != Null and (pos < 0 || pos > 7) and value < 0 || value > 15
+ * 
+ *  Post-condition: getNibble(pos,r) != value check that the nibble was assigned
  */
 void assignNibble(int, int, iRegister *);
 
-
-/** get the first (for pos=1) or the second (for pos=2) four bits of iRegsiter
+/** @brief assign a nibble value to a 32 bit register
+ *  
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ * 
+ *  @param pos nibble position in the 32 bit register 
+ *
+ *  @return int
+ * 
+ *  Pre-condition: iRegister != Null and (pos < 0 || pos > 7) 
+ * 
+ *  Post-condition: (nibble < 0 || nibble > 15) check that faulty value was not extracetd
  */
 int getNibble(int, iRegister *);
 
-
-/** returns a pointer to an array of 32 characters, with each character 
- *  representing the corresponding bit of the iRegister, i.e., if the bit is set,
- *  then the character is "1" (ASCII char with code 49), or otherwise is "0" 
- *  (ASCII char with code 48)
+/** @brief turn a 32 bit register into an string
+ *  
+ *  @param r a iRegister data structure.
+ *
+ *  @return char
+ * 
+ *  Pre-condition: iRegister != Null
+ * 
+ *  Post-condition: check that the string ended with \0
  */
 char *reg2str(iRegister);
 
-
-/** shifts all the bits of the iRegister to the right by n palces (appends 0 
- *  from the left)
+/** @brief shift right i steps
+ *  
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ *
+ *  @param i steps to shift 
+ *
+ *  @return void 
+ * 
+ *  Pre-condition: iRegister != Null
+ * 
+ *  Post-condition: 
  */
 void shiftRight(int, iRegister *);
 
-
-/** shifts all the bits of the iRegister to the left by n palces (appends 0 
- *  from the right)
+/** @brief shift left i steps
+ *  
+ *  @param r A pointer to a memory location of a iRegister data structure.
+ *
+ *  @param i steps to shift
+ *
+ *  @return void 
+ * 
+ *  Pre-condition: iRegister != Null
+ * 
+ *  Post-condition: 
  */
 void shiftLeft(int, iRegister *);
 
@@ -90,12 +156,6 @@ void shiftLeft(int, iRegister *);
  *    getBit(j, r) returns the same value for all 
  *  0 <= j < 32 and j <> i before and after resetBit(i, r)
  * 
- *  test-cases: 
- *  1,2,3. Allocate memory to an iRegister r
- *  first do resetAll(&r),
- *  then set the i'th bit of &x by setBit(i, &r) for i = 0, 15 and 23 and then
- *  display the result after each and every call by 
- *    printf("%s",reg2str(r)) 
  */
 void resetBit(int, iRegister *);
 
