@@ -173,41 +173,14 @@ void assignNibble(int pos , int value , iRegister *r) {
         return;
     }
 
-    int binaryNum[4] = {0,0,0,0};
-    int i=0;
-
-    // Make an array that have an binary representation of the number
-    for ( ;value > 0; ){
-        binaryNum[i++] = value % 2;
-        value /= 2;
-    }
-
-    //Target the starting bit of the nibble
     int targetPos = pos * 4;
-
-    // for (int j = i-1; j >= 0; j--)
-    //Loop binary array and set the bits in r
-    for (int j = 0; j < 4; j++) {
-
-        if (binaryNum[j] == 1) {
-            setBit(targetPos,r);
-            targetPos++;
-        }
-        if (binaryNum[j] == 0) {
-            resetBit(targetPos,r);
-            targetPos++;
-        }
-    }
-
-    int targetPosCon = pos * 4;
+    int mask = 1 << targetPos;
+    r->content = ((r->content & ~mask) | (value << targetPos));
 
     //Post condition
-    for(int n = 0; n < 4; n++){
-        if (binaryNum[n] != getBit(targetPosCon,r)){
-            fprintf(stderr,"Nibble was not assigned in assignNibble\n");
-            return;
-        }
-        targetPosCon++;
+    if(getNibble(pos,r) != value){
+        fprintf(stderr,"AssignNibble returned wrong value\n");
+        return;
     }
 }
 
@@ -227,29 +200,15 @@ int getNibble(int pos, iRegister *r) {
         return 0;
     }
 
-    int targetPos = pos * 4;;
-    int nibble[4] = {0,0,0,0};
+    int targetPos = pos * 4;
+    int nibble = (((1 << 4) - 1) & (r->content >> targetPos));
 
-    for (int j = 0; j < 4; j++) {
-        nibble[j] = getBit(targetPos,r);
-        targetPos++;
-    }
-
-    int nibbleValue = 0;
-
-    for(int k = 0; k < 4; k++) {
-        if (nibble[k] == 1){
-            nibbleValue += powerOf(2,k);
-        }
-    }
-
-    if (nibbleValue < 0 || nibbleValue > 15) {
-        fprintf(stderr,"Error: Failed to get the nibble value\n");
+    if (nibble < 0 || nibble > 15){
+        fprintf(stderr,"Error nibble position\n");
         return 0;
     }
 
-    //Post Condition
-    return nibbleValue;
+    return (((1 << 4) - 1) & (r->content >> targetPos));
 }
 
 char *reg2str(iRegister r) {
