@@ -11,8 +11,14 @@ int main()
 	
 	while(1){
 		piface_puts("Short string");
+		delay(600);
+		piface_clear();
 		piface_puts("This is a long string");
+		delay(600);
+		piface_clear();
 		piface_puts("1st line\n2nd line");
+		delay(600);
+		piface_clear();
 	}
 	
 	return 0;

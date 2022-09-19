@@ -132,6 +132,7 @@ static void lcd_write_cmd(uint8_t cmd){
     lcd_pulse( LCD_BL | (cmd & 0x0F) );
 
     LCD_DELAY;
+
 }
 
 static void lcd_write_data(uint8_t data){
@@ -196,6 +197,7 @@ void piface_putc(char c)
 void piface_puts(char s[])
 {
 	int lineCnt = 0;
+	
 	for (int i = 0; i < strlen(s); i++){
 		
 		if (lineCnt == 16){
@@ -215,7 +217,7 @@ void piface_puts(char s[])
 		piface_putc(s[i]);
 		lineCnt++;
 	}	
-
+	
 }
 
 /** @brief Clears the display
@@ -232,4 +234,5 @@ void delay(int delay){
 		LCD_DELAY;
 	}
 }	
+
 
