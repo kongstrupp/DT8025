@@ -6,35 +6,37 @@
 */
 
 #include <stdio.h>
-
 #include "expstruct.h"
 #include "piface.h"
+#include "led.h"
+
+#define LINE 32
 
 int main()
 {
+	
+	char str[LINE];
+	led_init();
 	piface_init();
 	piface_clear();
-	
-	char str[80];
-	
-	piface_puts("DT8025 - A2P2");
+
+	piface_puts("DT8025 - A2P3");
 	RPI_WaitMicroSeconds(2000000);	
-    piface_clear();
 	
     ExpStruct* value;
-	
-	int i;
-	
-    while(1){
-		for (i = 1; i < 21; i++){
-		value = iexp(i);
-		sprintf(str,"%d: %d.%d", i, value->expInt, value->expFraction);
-		piface_clear();
-		piface_puts(str);
-		free(value);
-	    }
-	}
-
+  
+	int cnt = 0;
+    int i; 
+	// cyclic execution
+    while (1){
+        for(i=1; i < 21; i++){
+			value = iexp(i);
+			sprintf(str,"%d: %d.%d", i, value->expInt, value->expFraction);
+			piface_clear();
+			piface_puts(str);
+			free(value);
+        }        
+    }
 	return 0;
 
 }

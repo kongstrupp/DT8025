@@ -8,9 +8,10 @@
 #include "rpi-systimer.h"
 #include "rpi-gpio.h"
 
-
+static int isOn = 0;
 
 void led_init(){
+	isOn = 0;
 	/* Write 1 to the GPIO16 init nibble in the Function Select 1 GPIO
        peripheral register to enable GPIO16 as an output */
     GPIO->GPFSEL1 |= (1 << 18);
@@ -29,6 +30,7 @@ void led_on(){
 	*/
 	GPIO->LED_GPSET |= (1 << LED_GPIO_BIT);
 #endif		
+	isOn = 1;
 }
 
 void led_off(){
@@ -40,13 +42,14 @@ void led_off(){
 	*/
 	GPIO->LED_GPCLR |= (1 << LED_GPIO_BIT);
 #endif	
+	isOn = 0;
 }
 
 void led_blink(){	
-	while(1){
-		led_off();
-		RPI_WaitMicroSeconds(500000);
-		led_on();
-		RPI_WaitMicroSeconds(500000);
-	}
+		if (isOn){
+		  led_off();
+		} else {
+			led_on();
+		}
 }
+
