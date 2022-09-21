@@ -197,26 +197,20 @@ void piface_putc(char c)
 void piface_puts(char s[])
 {
 	int lineCnt = 0;
-	
-	for (int i = 0; i < strlen(s); i++){
+	for (int i = 0; i < strlen(s); i++){	
 		
 		if (lineCnt == 16){
-			for(int j = i; j < 40; j++){
-				lcd_write_cmd(0x14);
-			}
+			lcd_write_cmd(0xc0);
 		}
 		
 		if (s[i] == '\n') {
-			for(int j = i; j < 40; j++){
-				lcd_write_cmd(0x14);
-			}
+			lcd_write_cmd(0xc0);
 			lineCnt = 0;
 			i++;
 		}
-		
 		piface_putc(s[i]);
 		lineCnt++;
-	}	
+	}
 	
 }
 
