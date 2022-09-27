@@ -95,8 +95,10 @@ void computeExponential(int seg) {
  */
 void toggle_led(int seg) {
 	while (1) {
+        led_toggle();
 	}
 }
+
 
 int main() {
 	led_init();
@@ -108,7 +110,12 @@ int main() {
 	RPI_WaitMicroSeconds(2000000);	
 	piface_clear();
     
-    spawn(computePower,0);
-    computePrimes(1);
+    print_at_seg(0,1);
+    print_at_seg(1,2);
+    print_at_seg(2,3);
+    print_at_seg(3,4);
+
+    //spawn(computePower,0);
+    //computePrimes(1);
     
 }

@@ -224,9 +224,6 @@ void piface_puts(char s[])
 			lineCnt++;
 		}
 	}
-	
-	
-	
 }
 
 /** @brief Clears the display
@@ -256,8 +253,9 @@ void piface_set_cursor(uint8_t col, uint8_t row)
     row = t > 0 ? row : 0;
     volatile uint8_t addr = col + ROW_OFFSETS[row];
     addr = addr % 80;
-    lcd_write_cmd( 0x80 | addr );
+    lcd_write_cmd( 0x80 | addr);
 	LCD_DELAY;
+
 }
 
 /** @brief Displays an integer content in a given segment in the PiFace display.
@@ -280,7 +278,36 @@ void piface_set_cursor(uint8_t col, uint8_t row)
  *     void printAtSeg(int seg, const char* fmt, ...);
  */
 void print_at_seg(int seg, int num) {
-    // To be implemented
+
+	if (0 > seg || seg > 3) {
+		return;
+	}
+
+	char str[8];
+
+	switch (seg) {
+		case 0:
+		sprintf(str,"S0:%d",num);
+		piface_set_cursor(0,0);
+		lineCnt = 0;
+		piface_puts(str);		
+		case 1:
+		sprintf(str,"S1:%d",num);
+		piface_set_cursor(8,0);
+		lineCnt = 8;
+		piface_puts(str);
+		case 2:
+		sprintf(str,"S2:%d",num);
+		piface_set_cursor(0,1);
+		lineCnt = 16;
+		piface_puts(str);
+		case 3: 
+		sprintf(str,"S3:%d",num);
+		piface_set_cursor(8,1);
+		lineCnt = 24;
+		piface_puts(str);
+	}
+
 }
 
 /** @brief Similar to print_at_seg, but displays arbitrary content on a given segment. For example:
