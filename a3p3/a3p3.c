@@ -79,6 +79,7 @@ void computeExponential(int seg) {
     while (1) {
 	}
 }
+//hello
 
 /** @brief Toggle the state of the LED.  
   * @param int seg Is the segment, i.e., 0: top left, 1:top right, 2: bottom left and 3: bottom right.
