@@ -1,0 +1,39 @@
+DT8025 a3p2
+
+1.What is the purpose of the function spawn?
+
+- Call another function, give it memory space, and enqueue it for later execution.
+
+2.What is the purpose of the function dispatch?
+
+- Exit the current thread and move to the next thread in the ready queue. 
+
+3.What is the purpose of the function yield?
+
+- Enqueing the current thread and moving to the next thread in the ready queue.
+
+4.After finishing the execution of line 3, describe the content of readyQ.
+
+- We will enqueue the newp that conatins the function (computePower) and the argument 0, the thread newp
+will be found in the readyQ 
+
+5.After finishing the execution of line 3, describe the content of freeQ.
+
+- The freeQ will conatin 4 empty thread blocks. 
+
+6.Consider the code above and the a3p1.img kernel from Pat 1. Which task executes first? Why?
+
+- The computePrimes function will execute (the main thread), and the computePower function is enqued and will be will dispatched when the computesPrimes function triggers yield() in its if-statment. 
+
+7.As they are, functions computePower and computePrimes execute indefinitely, i.e, never return. However, and considering the a3p1.img kernel, these functions are executed concurrently. How?
+
+- They are not executed concurrently they switch between each other so fast it will appear as if they were executing concurrently. What happens is that when one of these functions calls yield,
+the current thread is dispatched and the next thread in the readyQ will start executing until that threads function calls yield, and then it repeats. 
+
+8.Again, computePower and computePrimes never return. However, consider a situation when these functions return. This implies that the tiny thread assigned to execute the task will terminate. 
+Consequently, if you want or need to execute a task again, you might need to track which tiny threads terminated. 
+One approach is to keep information about the terminated threads in a list called doneQ. Thus, where in lib/tinythreads.c, would add the tiny thread that terminated into doneQ?
+
+- Adding some utiliy so that the yield function will keep track of which functions that have returned and if they have, putting them in the doneQ. That way you will never switch execution
+to a thread that have terminated. 
+

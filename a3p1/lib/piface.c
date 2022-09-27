@@ -22,8 +22,6 @@ int cnt;
 
 int lineCnt = 0;
 
- 
-	
 /* Bit-Banging SPI Driver */
 static void spi_init(void){
 	RPI_GetGpio()->GPFSEL0 |= (1 << 21);			        /* GPIO  7,  9 */
@@ -203,7 +201,7 @@ void piface_puts(char s[])
 {
 		
 	for (int i = 0; i < strlen(s); i++){	
-		
+
 		if (lineCnt == 32){
 			piface_clear();
 		} else if (lineCnt == 16){
@@ -211,19 +209,20 @@ void piface_puts(char s[])
 		} 
 		
 		if (s[i] == '\n') {
-			
 			if (lineCnt < 16){
 				lcd_write_cmd(0xc0);	
 				lineCnt = 16;
 			} else {
-				piface_clear();
+				lcd_write_cmd(0x80);
+				lineCnt = 0;
 			}
 			i++;
-			
 		}
-		
-		piface_putc(s[i]);
-		lineCnt++;
+
+		if (s[i] != '\0') {
+			piface_putc(s[i]);
+			lineCnt++;
+		}
 	}
 	
 	
@@ -245,6 +244,56 @@ void delay(int delay){
 		LCD_DELAY;
 	}
 }	
+
+/** @brief Sets the cursor on a specific row and column
+ *  Please check the url: http://piface.github.io/libpifacedigital/
+ */
+void piface_set_cursor(uint8_t col, uint8_t row)
+{
+    volatile uint8_t t = col < 39 ? col : 39;
+    col = t > 0 ? t : 0;
+    t = row < 1 ? row : 1;
+    row = t > 0 ? row : 0;
+    volatile uint8_t addr = col + ROW_OFFSETS[row];
+    addr = addr % 80;
+    lcd_write_cmd( 0x80 | addr );
+	LCD_DELAY;
+}
+
+/** @brief Displays an integer content in a given segment in the PiFace display.
+ *  Suppose that you decided to segment the display into 4 segments of 8 digits each.
+ *  For example, the illustration below ...
+ *      ------------------
+ *      |S0:XXXXXS1:XXXXX| 
+ *      |S2:XXXXXS3:XXXXX|
+ *      ------------------ 
+ *  shows each segment (seg:0...3) with digits each.
+ *  @param int seg Is the segment, i.e., 0: top left, 1:top right, 2: bottom left and 3: bottom right.
+ *  @param int num Is the integer input parameter to be displayed.
+ *  Pre-condition: 0<=seg<=3
+ 
+ *  NOTE: maybe, you want to display arbitrary content on a given segment. For example:
+ *      printAtSeg(1, "S%i: %.1f", 1, 3.14);
+ *  This requires the use of variadic arguments with proper string formatting.
+ *  Please check the url: https://en.cppreference.com/w/c/language/variadic
+ *  You can redeclare printAtSeg as:
+ *     void printAtSeg(int seg, const char* fmt, ...);
+ */
+void print_at_seg(int seg, int num) {
+    // To be implemented
+}
+
+/** @brief Similar to print_at_seg, but displays arbitrary content on a given segment. For example:
+ *      printAtSeg(1, "S%i: %.1f", 1, 3.14);
+ *  This requires the use of variadic arguments with proper string formatting.
+ *  Please check the url: https://en.cppreference.com/w/c/language/variadic
+ *  You can redeclare printAtSeg as:
+ *     void printAtSeg(int seg, const char* fmt, ...);
+ */
+void printf_at_seg(int seg, const char* fmt, ...) {
+    // The implementation is optional.
+	
+}
 
 
 

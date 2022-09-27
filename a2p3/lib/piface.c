@@ -20,6 +20,8 @@
 	
 int cnt;	
 
+int lineCnt = 0;
+
  
 	
 /* Bit-Banging SPI Driver */
@@ -199,21 +201,32 @@ void piface_putc(char c)
  */
 void piface_puts(char s[])
 {
-	int lineCnt = 0;
+		
 	for (int i = 0; i < strlen(s); i++){	
 		
-		if (lineCnt == 16){
+		if (lineCnt == 32){
+			piface_clear();
+		} else if (lineCnt == 16){
 			lcd_write_cmd(0xc0);
-		}
+		} 
 		
 		if (s[i] == '\n') {
-			lcd_write_cmd(0xc0);
-			lineCnt = 0;
+			
+			if (lineCnt < 16){
+				lcd_write_cmd(0xc0);	
+				lineCnt = 16;
+			} else {
+				piface_clear();
+			}
 			i++;
+			
 		}
+		
 		piface_putc(s[i]);
 		lineCnt++;
 	}
+	
+	
 	
 }
 
@@ -221,6 +234,7 @@ void piface_puts(char s[])
  */
 void piface_clear(void)
 {	
+	lineCnt = 0;
     lcd_write_cmd(0x01);
 }
 
@@ -231,5 +245,9 @@ void delay(int delay){
 		LCD_DELAY;
 	}
 }	
+
+
+
+
 
 
