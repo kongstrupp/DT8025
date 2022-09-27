@@ -279,11 +279,13 @@ void piface_set_cursor(uint8_t col, uint8_t row)
  */
 void print_at_seg(int seg, int num) {
 
+	//RPI_WaitMicroSeconds(500000);
+
 	if (0 > seg || seg > 3) {
 		return;
 	}
 
-	char str[8];
+	char str[32];
 
 	switch (seg) {
 		case 0:
@@ -291,21 +293,25 @@ void print_at_seg(int seg, int num) {
 		piface_set_cursor(0,0);
 		lineCnt = 0;
 		piface_puts(str);		
+		break;
 		case 1:
 		sprintf(str,"S1:%d",num);
 		piface_set_cursor(8,0);
-		lineCnt = 8;
+		lineCnt = 0;
 		piface_puts(str);
+		break;
 		case 2:
 		sprintf(str,"S2:%d",num);
 		piface_set_cursor(0,1);
-		lineCnt = 16;
+		lineCnt = 0;
 		piface_puts(str);
+		break;
 		case 3: 
 		sprintf(str,"S3:%d",num);
 		piface_set_cursor(8,1);
-		lineCnt = 24;
+		lineCnt = 0;
 		piface_puts(str);
+		break;
 	}
 
 }
