@@ -77,9 +77,18 @@ void computeExponential(int seg) {
 	ExpStruct* value;
     int n; 
     while (1) {
+        value = iexp(n);
+        if (seg % 2 == 0) {
+            print_at_seg(seg, value->expInt);
+        }
+        else {
+            print_at_seg(seg, value->expFraction)
+        }
+        n ++;
+        yield();
 	}
 }
-//hello
+
 
 /** @brief Toggle the state of the LED.  
   * @param int seg Is the segment, i.e., 0: top left, 1:top right, 2: bottom left and 3: bottom right.
