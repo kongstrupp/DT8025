@@ -88,6 +88,7 @@ void toggle_led(int seg) {
 	}
 }
 
+
 int main() {
 	led_init();
 	
