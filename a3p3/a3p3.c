@@ -77,15 +77,17 @@ void computeExponential(int seg) {
 	ExpStruct* value;
     int n; 
     while (1) {
+
 	}
 }
-//hello
+
 
 /** @brief Toggle the state of the LED.  
   * @param int seg Is the segment, i.e., 0: top left, 1:top right, 2: bottom left and 3: bottom right.
  */
 void toggle_led(int seg) {
 	while (1) {
+        led_toggle();
 	}
 }
 
@@ -100,7 +102,12 @@ int main() {
 	RPI_WaitMicroSeconds(2000000);	
 	piface_clear();
     
-    spawn(computePower,0);
-    computePrimes(1);
+    print_at_seg(0,1);
+    print_at_seg(1,2);
+    print_at_seg(2,3);
+    print_at_seg(3,4);
+
+    //spawn(computePower,0);
+    //computePrimes(1);
     
 }
