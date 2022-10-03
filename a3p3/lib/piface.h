@@ -3,7 +3,6 @@
     Copyright (c) 2017, Sebastian Kunze <sebastian.kunze@hh.se>
     All rights reserved.
 */
-
 /*
  * Modified by Wagner Morais on Sep 2022.
  */
@@ -51,9 +50,13 @@
 #define LCD_RS      (1 << 6)
 #define LCD_BL      (1 << 7)
 
+#define LCD_DELAY \
+	do { for(volatile int DELAYx = 0; DELAYx < 5000; DELAYx++); } while(0);
+
 #define PUTTOLDC(fmt, args...){ \
 	char s[9]; \
     sprintf(s, fmt, ##args); \
+	s[8] = '\0'; \
     piface_puts(s); \
 }
 
@@ -64,15 +67,8 @@ void piface_init(void);
 void piface_putc(char c);
 void piface_puts(char s[]);
 void piface_clear();
-void delay(int delay);
 
-// void piface_set_cursor(uint8_t col, uint8_t row);
-// void print_at_seg(int seg, int num);
-// void printf_at_seg(int seg, const char* fmt, ...);
-// To be implemented in Assignment 4!!!
 void piface_set_cursor(uint8_t col, uint8_t row);
-// To be implemented in Assignment 4!!!
 void print_at_seg(int seg, int num);
-// Optional
 void printf_at_seg(int seg, const char* fmt, ...);
 #endif

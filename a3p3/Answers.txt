@@ -1,0 +1,23 @@
+A3P3 - Question 
+
+Why does this main not work?
+
+piface_init();
+    piface_puts("DT8025 - A3P3");
+    RPI_WaitMicroSeconds(2000000);
+    piface_clear();
+    led_init();
+    led_toggle();
+    spawn(computePower, 0);
+    spawn(computePower, 1);
+    spawn(computePrimes, 2);
+    spawn(computePrimes, 3);
+    spawn(computeExponential, 4);
+    spawn(computeExponential, 5);
+    toggle_led(6);
+
+Answer: 
+
+When using this main the RPi turns on but nothing happens, the cursor is at the beginning of the screen.
+This happens because the main uses more threads then the NTHREADS array in tinythreads allows, the total size 
+if 5 and the main uses 7 threads. 

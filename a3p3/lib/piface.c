@@ -3,7 +3,6 @@
     Copyright (c) 2017, Sebastian Kunze <sebastian.kunze@hh.se>
     All rights reserved.
 */
-
 /*
  * Modified by Wagner Morais on Sep 2022.
  */
@@ -14,28 +13,26 @@
 #include "rpi-gpio.h"
 #include "piface.h"
 
-
-#define LCD_DELAY \
-	do { for(volatile int DELAYx = 0; DELAYx < 5000; DELAYx++); } while(0);
-	
-int cnt;	
+int cnt;
 
 int lineCnt = 0;
 
 /* Bit-Banging SPI Driver */
 static void spi_init(void){
-	RPI_GetGpio()->GPFSEL0 |= (1 << 21);			        /* GPIO  7,  9 */
-	RPI_GetGpio()->GPFSEL1 |= (1 <<  0) | (1 <<  3);		/* GPIO 10, 11 */
+	RPI_GetGpio()->GPFSEL0 |= (1 << 21);			    /* GPIO  7,  9 */
+	RPI_GetGpio()->GPFSEL1 |= (1 <<  0) | (1 <<  3);	/* GPIO 10, 11 */
 	RPI_GetGpio()->GPSET0 = (1 << 7);			        /* /CE high */
 	RPI_GetGpio()->GPCLR0 = (1 << 11);			        /* CLK low */
 }
 
 static void spi_start(void){
-	RPI_GetGpio()->GPCLR0 = (1 << 7);			        /* /CE low  */
+	/* /CE low  */
+	RPI_GetGpio()->GPCLR0 = (1 << 7);			        
 }
 
 static void spi_stop(void){
-	RPI_GetGpio()->GPSET0 = (1 << 7);			        /* /CE high */
+	/* /CE high */
+	RPI_GetGpio()->GPSET0 = (1 << 7);			        
 }
 
 static void spi_byte(const uint8_t out, uint8_t *in){
@@ -44,22 +41,22 @@ static void spi_byte(const uint8_t out, uint8_t *in){
 	/* clock each bit out and read back */
 	for(int i = 0; i < 8; i++){
 		tmpin <<= 1;
-
 		if(tmpout & 0x80)
-			RPI_GetGpio()->GPSET0 = (1 << 10);	// set MOSI
+			// set MOSI
+			RPI_GetGpio()->GPSET0 = (1 << 10);
 		else
 			RPI_GetGpio()->GPCLR0 = (1 << 10);
-
+		// read MISO
 		if(RPI_GetGpio()->GPLEV0 & (1 << 9))
-			tmpin |= 1;		// read MISO
-
-		RPI_GetGpio()->GPSET0 = (1 << 11);			// set CLK
-		RPI_GetGpio()->GPCLR0 = (1 << 11);			// clear CLK
-
+			tmpin |= 1;
+		// set CLK
+		RPI_GetGpio()->GPSET0 = (1 << 11);	
+		// clear CLK		
+		RPI_GetGpio()->GPCLR0 = (1 << 11);				
 		tmpout <<= 1;
 	}
-
 	*in = tmpin;
+
 	return;
 }
 
@@ -89,7 +86,6 @@ static void mcp_init(void){
 	/* Port A: (S1 .. S5, S, L, R) */
 	mcp_write(MCP_IODIRA, 0xFF);
 	mcp_write(MCP_GPPUA, 0xFF);
-
 	/* Port B: (DB4 .. DB7, /EN, R/W, RS, LED) */
 	mcp_write(MCP_IODIRB, 0x00);
 }
@@ -128,30 +124,27 @@ static void lcd_pulse(uint8_t val){
 
 static void lcd_write_cmd(uint8_t cmd){
 	lcd_busy_wait();
-    /* write high nibble */
+	/* write high nibble */
 	lcd_pulse( LCD_BL | (cmd >> 4)   );
-
-    /* write low nibble */
+	lcd_busy_wait();
+	/* write low nibble */
     lcd_pulse( LCD_BL | (cmd & 0x0F) );
-
-    LCD_DELAY;
-
+	LCD_DELAY;
 }
 
 static void lcd_write_data(uint8_t data){
 	lcd_busy_wait();
-
-    /* write high nibble */
+	/* write high nibble */
 	lcd_pulse( LCD_BL | LCD_RS | (data >> 4)   );
-
 	lcd_busy_wait();
-
     /* write low nibble */
     lcd_pulse( LCD_BL | LCD_RS | (data & 0x0F) );
+	lcd_busy_wait();
 }
 
 static void lcd_init(void){
 	/* enable 4 bit mode */
+	LCD_DELAY;
 	LCD_DELAY;
 	lcd_pulse( 0x03 );
 	LCD_DELAY;
@@ -161,18 +154,18 @@ static void lcd_init(void){
 	LCD_DELAY;
 	lcd_pulse( 0x02 );
 	LCD_DELAY;
-
     /* function set; N = 1 for two rows, F = 0 for 5x8 display */
-	lcd_write_cmd( 0x28 );
+	lcd_write_cmd( 0x28 );	
+	LCD_DELAY;
+	/* display on/off; D = 1 for display on, C = 1 for cursor on; B = 0 for blinking off*/
+	lcd_write_cmd( 0x0E );
+	LCD_DELAY;
     /* display clear */
 	lcd_write_cmd( 0x01 );
-	LCD_DELAY;
-
+	LCD_DELAY;	
     /* entry mode set; I/D = 1 for direction left to right, S = 0 for shift off */
 	lcd_write_cmd( 0x06 );
-    /* display on/off; D = 1 for display on, C = 1 for cursor on; B = 0 for blinking off*/
-	lcd_write_cmd( 0x0E );
-	// lcd_write_cmd( 0x0F );
+	LCD_DELAY;
 }
 
 __attribute__((constructor))
@@ -187,20 +180,18 @@ uint8_t piface_getc(void){
 	return mcp_read(MCP_GPIOA);
 }
 
-
 /** @brief Writes a character
  */
-void piface_putc(char c)
-{	
+void piface_putc(char c){
 	lcd_write_data((int) c);
 }
 
 /** @brief Writes a string
  */
-void piface_puts(char s[])
-{
-		
+void piface_puts(char s[]){
+    	
 	for (int i = 0; i < strlen(s); i++){	
+
 
 		if (lineCnt == 32){
 			piface_clear();
@@ -223,40 +214,35 @@ void piface_puts(char s[])
 			piface_putc(s[i]);
 			lineCnt++;
 		}
+
 	}
 }
+
 
 /** @brief Clears the display
  */
-void piface_clear(void)
-{	
+
+void piface_clear(void) {
 	lineCnt = 0;
     lcd_write_cmd(0x01);
 }
-
-/** @brief Delay function
- */
-void delay(int delay){
-	for(int i = 0; i < delay; i++){
-		LCD_DELAY;
-	}
-}	
 
 /** @brief Sets the cursor on a specific row and column
  *  Please check the url: http://piface.github.io/libpifacedigital/
  */
 void piface_set_cursor(uint8_t col, uint8_t row)
 {
-    volatile uint8_t t = col < 39 ? col : 39;
+    // lcd_write_cmd(0x02);
+	volatile uint8_t t = col < 39 ? col : 39;
     col = t > 0 ? t : 0;
     t = row < 1 ? row : 1;
     row = t > 0 ? row : 0;
     volatile uint8_t addr = col + ROW_OFFSETS[row];
     addr = addr % 80;
-    lcd_write_cmd( 0x80 | addr);
+    lcd_write_cmd( 0x80 | addr );
 	LCD_DELAY;
-
 }
+
 
 /** @brief Displays an integer content in a given segment in the PiFace display.
  *  Suppose that you decided to segment the display into 4 segments of 8 digits each.
@@ -278,15 +264,8 @@ void piface_set_cursor(uint8_t col, uint8_t row)
  *     void printAtSeg(int seg, const char* fmt, ...);
  */
 void print_at_seg(int seg, int num) {
-
-	//RPI_WaitMicroSeconds(500000);
-
-	if (0 > seg || seg > 3) {
-		return;
-	}
-
-	char str[32];
-
+    char str[32];
+	
 	switch (seg) {
 		case 0:
 		sprintf(str,"S0:%d",num);
@@ -313,7 +292,8 @@ void print_at_seg(int seg, int num) {
 		piface_puts(str);
 		break;
 	}
-
+	
+	
 }
 
 /** @brief Similar to print_at_seg, but displays arbitrary content on a given segment. For example:
@@ -325,11 +305,4 @@ void print_at_seg(int seg, int num) {
  */
 void printf_at_seg(int seg, const char* fmt, ...) {
     // The implementation is optional.
-	
 }
-
-
-
-
-
-

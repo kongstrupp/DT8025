@@ -23,6 +23,8 @@
 #include "rpi-systimer.h"
 #include "rpi-interrupts.h"
 
+int temp = 0;
+
 /** @brief Checks whether the input parameter is divisible by itself and 1, i.e, if the input parameter is prime.
  *  @param int i Is the input parameter to be checked whether it is prime or not
  *  @return int Returns 1 if the input parameter is prime, else it returns 0.
@@ -50,7 +52,6 @@ int is_prime(int i) {
 void computePrimes(int seg) {
     for(int n = 0; ; n++) {  
         if (is_prime(n)) {
-            //PUTTOLDC("T%i: Prime %i\n", seg, n);
             print_at_seg(seg, n); 
 			RPI_WaitMicroSeconds(500000); //delay of 0.5s added for visualization purposes!!!
             yield();
@@ -63,7 +64,6 @@ void computePrimes(int seg) {
  */
 void computePower(int seg) {
 	for(int n = 0; ; n++) {
-		//PUTTOLDC("T%i: %i^2=%i\n", seg, n, n*n);
         print_at_seg(seg,n*n);
 		RPI_WaitMicroSeconds(500000); //delay of 0.5s added for visualization purposes!!!
         yield();
@@ -79,17 +79,18 @@ void computeExponential(int seg) {
 	ExpStruct* value;
     int n; 
     while (1) {
-        for(n = 1; n < 21; n++ ){
-        value = iexp(n);
-        if (seg % 2 == 0) {
-            print_at_seg(seg, value->expInt);
+        for(n = 1; n < 21; n++ ) {
+            value = iexp(n);
+            if (seg % 2 == 0) {
+                print_at_seg(seg, value->expInt);
+            }
+            else {
+                print_at_seg(seg, value->expFraction);
+            }
+            free(value);
+            RPI_WaitMicroSeconds(500000);
+            yield();
         }
-        else {
-            print_at_seg(seg, value->expFraction);
-        }
-        yield();
-        }
-        
 	}
 }
 
@@ -100,27 +101,42 @@ void computeExponential(int seg) {
 void toggle_led(int seg) {
 	while (1) {
         led_toggle();
-        RPI_WaitMicroSeconds(500000);
         yield();
 	}
 }
 
 
 int main() {
-	led_init();
+    /*
     piface_init();
-    piface_clear();
     piface_puts("DT8025 - A3P3");
     RPI_WaitMicroSeconds(2000000);
     piface_clear();
+    led_init();
+    led_toggle();
+    spawn(computePower, 0);
+    spawn(computePower, 1);
+    spawn(computePrimes, 2);
+    spawn(computePrimes, 3);
+    spawn(computeExponential, 4);
+    spawn(computeExponential, 5);
+    toggle_led(6);
+    */
 
 
 
+    
+	piface_init();
+    piface_puts("DT8025 - A3P3");
+    RPI_WaitMicroSeconds(2000000);    
+    piface_clear();
+    led_init();
+    led_toggle();
+    
     spawn(computePower, 0);
     spawn(computePrimes, 1);
-    //computePower(3);
-    spawn(computePower, 2);
-    computePrimes(3);
-    //toggle_led(4);
+    spawn(computeExponential, 2);
+    spawn(computeExponential, 3);
+    toggle_led(4); 
     
 }

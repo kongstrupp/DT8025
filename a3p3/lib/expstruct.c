@@ -23,8 +23,6 @@ ExpStruct *iexp(int x){
     int i = 1;
     
 	while(temp > 0.001){
-		RPI_WaitMicroSeconds(100000);
-        led_blink();
 		temp=(temp*power)/i;
         ans=ans+temp;
 		i++;
