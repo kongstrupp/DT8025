@@ -123,9 +123,6 @@ int main() {
     toggle_led(6);
     */
 
-
-
-    
 	piface_init();
     piface_puts("DT8025 - A3P3");
     RPI_WaitMicroSeconds(2000000);    

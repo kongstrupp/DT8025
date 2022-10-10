@@ -1,0 +1,84 @@
+A4P1_3 Questions 
+
+What is the purpose of the macros DISABLE() and ENABLE()?
+
+- That you want enter a critical section in your code were you do not want any other operation to be executed than the critical section that you are in. DISABLE()
+Disables the interupts and ENABLE enables the interupts. By wrapping code between DISABLE() and ENABLE() you gurantee that no interupts may occur in the segment between
+these two macros.
+
+What could happen if a yield() call was injected at the worst place possible within functions like dispatch()or enqueue()? What about injecting such a call into yield() itself? 
+
+- If we would call yield() within dispatch we would end up in an infinte loop, we will get stuck by dequeueing the first one and then enqueueing at the end of the readyQ. There are two
+particular posistion within enqueue that would effect the program in an cricitcal way, the first one is in the beginning resulting in an dequeueing over and over again until the readyQ 
+is empty and the program stops, another position worth considering would be putting it at the end which would result in the same loop as before. Considering all the places that yield() could
+be inserted into yield() itself would result in inifinte loops. There are four diffrent kinds of infinte loops:
+
+
+1. 
+
+void yield(void) {
+	DISABLE();
+	if (readyQ != NULL){		
+		thread p = dequeue(&readyQ);
+		yield();
+		enqueue(current, &readyQ);
+		dispatch(p);
+	}	
+	ENABLE();
+}
+
+This verison will result in dequeueing until the program stops. 
+
+2.
+
+void yield(void) {
+	DISABLE();
+	if (readyQ != NULL){		
+		thread p = dequeue(&readyQ);
+		enqueue(current, &readyQ);
+		yield();
+		dispatch(p);
+	}	
+	ENABLE();
+}
+
+This version will result in an infinte loop that dequeues and enqueues.
+
+3. 
+
+void yield(void) {
+	DISABLE();
+	if (readyQ != NULL){		
+		thread p = dequeue(&readyQ);
+		enqueue(current, &readyQ);
+		dispatch(p);
+		yield();
+	}	
+	ENABLE();
+}
+
+This version will infinite loop that contexts switches. 
+
+
+4. 
+
+void yield(void) {
+	DISABLE();
+	yield();
+	if (readyQ != NULL){
+		yield(); 
+		thread p = dequeue(&readyQ);
+		enqueue(current, &readyQ);
+		dispatch(p);
+	}	
+	ENABLE();
+}
+
+The other alternatives would result in just infinite loops calling yield() without doing anything. 
+
+
+
+
+
+
+

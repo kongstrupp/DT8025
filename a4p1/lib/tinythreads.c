@@ -147,8 +147,7 @@ void spawn(void (* function)(int), int arg) {
 		ENABLE();
 		current->function(current->arg);
 		DISABLE();
-		enqueue(current, &freeQ); // addded a Q 
-		//enqueue()
+		enqueue(current, &free);
 		current = NULL;
 		dispatch(dequeue(&readyQ));	
 	}
@@ -176,6 +175,15 @@ void yield(void) {
  */
 void lock(mutex *m) {
 	// To be implemented in Assignment 4!!!
+	ENABLE();
+	if (m->locked == 0){
+		m->locked = 1;
+	} else {
+		thread p = dequeue(&readyQ);
+		enqueue(current, &m->waitQ);
+		dispatch(p);
+	}
+	DISABLE();
 }
 
 /** @brief Activate a thread in the waiting queue of the mutex if it is
@@ -183,6 +191,14 @@ void lock(mutex *m) {
  */
 void unlock(mutex *m) {
 	// To be implemented in Assignment 4!!!
+	ENABLE();
+	if (m->waitQ != NULL){
+		thread p = dequeue(&m->waitQ);
+		dispatch(p);
+	} else {
+		m->locked = 0;
+	}
+	DISABLE();
 }
 
 /** @brief Creates an thread block instance and assign to it an start routine, 
@@ -219,6 +235,11 @@ void respawn_periodic_tasks(void) {
  */
 static void scheduler_RR(void){
 	// To be implemented in Assignment 4!!!
+	if (readyQ != NULL){		
+		thread p = dequeue(&readyQ);
+		enqueue(current, &readyQ);
+		dispatch(p);
+	} 
 }
 
 /** @brief Schedules periodic tasks using Rate Monotonic (RM) 
@@ -239,6 +260,7 @@ static void scheduler_EDF(void){
  * it will first call the method that re-spawns period tasks.
  */
 void scheduler(void){
+	scheduler_RR();
 	// To be implemented in Assignment 4!!!
 }
 
