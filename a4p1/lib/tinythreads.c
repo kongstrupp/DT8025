@@ -175,7 +175,7 @@ void yield(void) {
  */
 void lock(mutex *m) {
 	// To be implemented in Assignment 4!!!
-	ENABLE();
+	DISABLE();
 	if (m->locked == 0){
 		m->locked = 1;
 	} else {
@@ -183,7 +183,7 @@ void lock(mutex *m) {
 		enqueue(current, &m->waitQ);
 		dispatch(p);
 	}
-	DISABLE();
+	ENABLE();
 }
 
 /** @brief Activate a thread in the waiting queue of the mutex if it is
@@ -191,14 +191,18 @@ void lock(mutex *m) {
  */
 void unlock(mutex *m) {
 	// To be implemented in Assignment 4!!!
-	ENABLE();
+	DISABLE();	
+	if (m->locked == 0){
+		return;
+	}
 	if (m->waitQ != NULL){
 		thread p = dequeue(&m->waitQ);
+		enqueue(current,&readyQ);
 		dispatch(p);
 	} else {
 		m->locked = 0;
 	}
-	DISABLE();
+	ENABLE();
 }
 
 /** @brief Creates an thread block instance and assign to it an start routine, 
