@@ -93,11 +93,11 @@ void computeSomethingForever(int seg) {
     ExpStruct* value;
 	for(volatile uint32_t i=0; ; i++)
     {
-		// exp of the 1st 9 positive integers, except 0 
+		// exp of the 1st 9 positive integers,, except 0 
 		value = iexp((i%8)+1);
-    //lock(&mute); // Assigment 4.5 
+    lock(&mute); // Assigment 4.5
 		print_at_seg(seg % 4, value->expInt);
-    //unlock(&mute); // Assigment 4.5
+    unlock(&mute); // Assigment 4.5
 		// printf_at_seg(seg % 4, "S%i: %04i", seg, value->expInt);
     }
 } 

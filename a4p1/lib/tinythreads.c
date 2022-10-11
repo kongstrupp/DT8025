@@ -179,9 +179,8 @@ void lock(mutex *m) {
 	if (m->locked == 0){
 		m->locked = 1;
 	} else {
-		thread p = dequeue(&readyQ);
 		enqueue(current, &m->waitQ);
-		dispatch(p);
+		dispatch(dequeue(&readyQ));
 	}
 	ENABLE();
 }
@@ -196,9 +195,9 @@ void unlock(mutex *m) {
 		return;
 	}
 	if (m->waitQ != NULL){
-		thread p = dequeue(&m->waitQ);
+		//thread p = dequeue(&m->waitQ);
 		enqueue(current,&readyQ);
-		dispatch(p);
+		dispatch(dequeue(&m->waitQ));
 	} else {
 		m->locked = 0;
 	}
@@ -264,8 +263,8 @@ static void scheduler_EDF(void){
  * it will first call the method that re-spawns period tasks.
  */
 void scheduler(void){
-	scheduler_RR();
 	// To be implemented in Assignment 4!!!
+	scheduler_RR();
 }
 
 /** @brief Prints via UART the content of the main variables in TinyThreads
