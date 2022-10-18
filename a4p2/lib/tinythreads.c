@@ -147,7 +147,7 @@ void spawn(void (* function)(int), int arg) {
 		ENABLE();
 		current->function(current->arg);
 		DISABLE();
-		enqueue(current, &free);
+		enqueue(current, &freeQ);
 		current = NULL;
 		dispatch(dequeue(&readyQ));	
 	}
@@ -213,8 +213,9 @@ void spawnWithDeadline(void (* function)(int), int arg, unsigned int deadline, u
 	// To be implemented in Assignment 4!!!
 	thread newp;
 	DISABLE();
-	if (!initialized) 
+	if (!initialized) {
 		initialize();
+	}
 	newp = dequeue(&freeQ);
 	newp->function = function;
 	newp->arg = arg;
@@ -239,26 +240,39 @@ void spawnWithDeadline(void (* function)(int), int arg, unsigned int deadline, u
 
 /** @brief Removes a specific element from the queue.
  */
- static thread dequeueItem(thread *queue, int idx) {
+static thread dequeueItem(thread *queue, int idx) {
 	// You might need it in Assignment 4!!!
-	thread temp = *queue;
-	thread prev = NULL;
-	int i = 0;
+	
+	int i = -1;
+	thread p = *queue;
+	thread ret = NULL;
 
-	while(i < idx) {
-		prev = temp;
-		temp = temp->next;
+	if (*queue == NULL){
+		return ret;
+	}
+
+	
+	if ((*queue)->idx == idx) {
+		return dequeue(queue);
+	}
+	
+
+	while ((*queue)->next) {
+		if ((*queue)->idx == idx) {
+			ret = dequeue(queue);
+		} else {
+			enqueue(dequeue(queue),queue);
+		}
+
+		if ((*queue)->idx == p->idx) {
+			break;
+		}
+		
 		i++;
-	}  
+	}
 
-	if (prev != NULL){
-		prev->next = temp->next;
-	} else {
-		//*queue = (*queue)->next;
-		temp = dequeue(&queue);
-	}	
-
-	return temp; 
+	
+	return ret;
 }
 
 
@@ -268,27 +282,31 @@ void spawnWithDeadline(void (* function)(int), int arg, unsigned int deadline, u
  */
 static void sortX(thread *queue) {
 	// To be implemented in Assignment 4!!!
+	DISABLE();
 	if (*queue == NULL){
 		return;
 	}
 
 	thread temp = *queue;
+	thread temp2 = NULL;
 	int cnt = 0;
+
+	temp2 = dequeueItem(queue, -1);
+
 	
 	while (temp->next != NULL) {
-
-		print_at_seg(4,cnt);
-
-		if (temp->Period_Deadline > temp->next->Period_Deadline){
-			thread p = dequeueItem(&queue,cnt);
-			enqueue(p ,&queue);
-			temp = temp->next;
-			cnt++;
-		} else {
-			temp = temp->next;
-			cnt++;
+		if (temp->Period_Deadline > temp->next->Period_Deadline){ 
+			thread p = dequeueItem(queue, temp->idx);
+			enqueue(p ,queue);
 		}
+		temp = temp->next;
+		cnt++;
 	}
+	
+	enqueue(temp2,queue);
+	
+
+	ENABLE();
 }
 
 
@@ -297,24 +315,39 @@ static void sortX(thread *queue) {
 void respawn_periodic_tasks(void) {
 	// To be implemented in Assignment 4!!!
 	DISABLE();
-	while (doneQ != NULL){
-		thread newp;
-		if (!initialized) 
-			initialize();
-		newp = dequeue(&doneQ);
-		if (setjmp(newp->context) == 1) {
-			ENABLE();
-			current->function(current->arg);
-			DISABLE();
-			//enqueue(current, &freeQ);
-			enqueue(current,&doneQ);
-			current = NULL;
-			dispatch(dequeue(&readyQ));	
-		}
-		SETSTACK(&newp->context, &newp->stack);
-		enqueue(newp, &readyQ);
+
+	if(doneQ == NULL){
+		return;
 	}
+	thread p = doneQ;
+	int i = 0;
+	while (p) {	
+		if (ticks % p->Period_Deadline == 0) {
+			thread temp = p->next;
+			thread t = dequeueItem(&doneQ,p->idx);
+			//thread t = dequeue(&doneQ);
+			//p = dequeueItem(&doneQ,i);
+			if (setjmp(t->context) == 1) {
+				ENABLE();
+				current->function(current->arg);
+				DISABLE();
+				enqueue(current,&doneQ);
+				current = NULL;
+				dispatch(dequeue(&readyQ));	
+			}
+			SETSTACK(&t->context, &t->stack);
+			enqueue(t,&readyQ);
+			p = temp;
+		} else {
+			i++;
+			p = p->next;
+		}
+	}
+	
 	ENABLE();
+	
+	
+	
 }
 
 /** @brief Schedules tasks using time slicing

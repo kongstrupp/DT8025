@@ -1,0 +1,6 @@
+A4P3
+
+What is the result and implication of removing the code while(t==ticks)? Elaborate on your answer. 
+
+- The purpose of the while is for waiting for ticks to finish the execution of computeSomething, If there was no while loop
+the threads with the computeSomething will execute one after another without waiting. It will print and then terminate directly without waiting

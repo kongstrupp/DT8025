@@ -269,25 +269,25 @@ void print_at_seg(int seg, int num) {
 	
 	switch (seg) {
 		case 0:
-		sprintf(str,"S0:%04d",num);
+		sprintf(str,"S0:%d ",num);
 		piface_set_cursor(0,0);
 		lineCnt = 0;
 		piface_puts(str);		
 		break;
 		case 1:
-		sprintf(str,"S1:%04d",num);
+		sprintf(str,"S1:%d ",num);
 		piface_set_cursor(8,0);
 		lineCnt = 0;
 		piface_puts(str);
 		break;
 		case 2:
-		sprintf(str,"S2:%04d",num);
+		sprintf(str,"S2:%d ",num);
 		piface_set_cursor(0,1);
 		lineCnt = 0;
 		piface_puts(str);
 		break;
 		case 3: 
-		sprintf(str,"S3:%04d",num);
+		sprintf(str,"S3:%d ",num);
 		piface_set_cursor(8,1);
 		lineCnt = 0;
 		piface_puts(str);

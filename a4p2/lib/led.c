@@ -8,11 +8,10 @@
 #include "rpi-systimer.h"
 #include "rpi-gpio.h"
 
-volatile unsigned int ledon = 0;
+volatile unsigned int isOn = 0;
 
 void led_init(){
-
-	/* Write 1 to the GPIO16 init nibble in the Function Select 1 GPIO
+		/* Write 1 to the GPIO16 init nibble in the Function Select 1 GPIO
        peripheral register to enable GPIO16 as an output */
     GPIO->GPFSEL1 |= (1 << 18);
 
@@ -21,9 +20,7 @@ void led_init(){
 // #endif	
 }
 
-void led_blink(){
 
-}
 
 void led_on(){
 	/* Set the GPIO16 output high ( Turn OK LED off )*/
@@ -34,7 +31,17 @@ void led_on(){
 	// */
 	// GPIO->LED_GPSET |= (1 << LED_GPIO_BIT);
 // #endif		
+}
 
+
+void led_blink(){
+	// Implemented in Assignment 1!!!
+	while(1){
+		led_off();
+		RPI_WaitMicroSeconds(500000);
+		led_on();
+		RPI_WaitMicroSeconds(500000);
+	}
 }
 
 void led_off(){
@@ -46,9 +53,16 @@ void led_off(){
 	// */
 	// GPIO->LED_GPCLR |= (1 << LED_GPIO_BIT);
 // #endif	
-
 }
 
-void led_toggle() {
 
+void led_toggle() {
+	// Implemented in Assignment 2??
+	if (isOn){
+		  led_off();
+		  isOn = 0;
+		} else {
+			led_on();
+			isOn = 1;
+		}	
 }
